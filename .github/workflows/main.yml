@@ -40,6 +40,7 @@ jobs:
         password: ${{ secrets.SERVER_PASSWORD }}
         port: ${{ secrets.SERVER_PORT }}
         script:
+          touch /test.md
           whoami
           docker stop api-sederhana || true && docker rm api-sederhana || true
           docker pull ${{ vars.IMAGE_NAME }}
