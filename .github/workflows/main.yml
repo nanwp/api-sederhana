@@ -42,5 +42,5 @@ jobs:
         script: |
           whoami
           docker stop api-sederhana || true && docker rm api-sederhana || true
-          docker pull ${{ vars.IMAGE_NAME }}
+          docker pull bagendeh/${{ vars.IMAGE_NAME }}
           docker run -d -p 8080:8080 --name ${{ vars.CONTAINER_NAME }} ${{ vars.IMAGE_NAME }} 
