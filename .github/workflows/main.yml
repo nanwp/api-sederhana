@@ -41,6 +41,6 @@ jobs:
         port: ${{ secrets.SERVER_PORT }}
         script: |
           whoami
-          docker stop api-sederhana || true && docker rm {{ vars.IMAGE_NAME }} || true
+          docker stop api-sederhana || true && docker rm api-sederhana || true
           docker pull ${{ vars.IMAGE_NAME }}
           docker run -d -p 8080:8080 --name ${{ vars.CONTAINER_NAME }} ${{ vars.IMAGE_NAME }} 
