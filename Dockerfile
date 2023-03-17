@@ -1,6 +1,6 @@
 FROM golang:alpine
 
-RUN apk update && apk --nocache git
+RUN apk update && apk add --no-cache git
 
 WORKDIR /app
 
