@@ -11,6 +11,7 @@ func main() {
 	r.GET("/api-sederhana", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"pesan": "Masuk",
+			"user":  "Untuk user",
 		})
 	})
 
