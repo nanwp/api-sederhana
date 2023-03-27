@@ -22,7 +22,7 @@ func main() {
 	r.POST("/daftar", userHandler.Register)
 	r.POST("/login", userHandler.Login)
 
-	a := r.Group("/user", middleware.JWTMiddleware)
+	a := r.Group("/users", middleware.JWTMiddleware)
 	a.GET("/", handler.Index)
 	r.Run()
 
