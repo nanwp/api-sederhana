@@ -2,18 +2,28 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/nanwp/api-sederhana/config"
+	"github.com/nanwp/api-sederhana/controllers/handler"
+	"github.com/nanwp/api-sederhana/controllers/repository"
+	"github.com/nanwp/api-sederhana/controllers/service"
+	"github.com/nanwp/api-sederhana/middleware"
 )
 
 var version = "dev"
 
 func main() {
 	r := gin.Default()
-	r.GET("/api-sederhana", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"pesan": "Masuk",
-			"user":  "Untuk user",
-		})
-	})
+	db := config.ConnectDatabase()
 
+	userRepo := repository.NewUserRepository(db)
+	userService := service.NewUserService(userRepo)
+	userHandler := handler.NewUserHandler(userService)
+
+	r.POST("/daftar", userHandler.Register)
+	r.POST("/login", userHandler.Login)
+
+	a := r.Group("/user", middleware.JWTMiddleware)
+	a.GET("/", handler.Index)
 	r.Run()
+
 }
