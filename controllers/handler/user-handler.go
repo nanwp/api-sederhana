@@ -26,7 +26,6 @@ func NewUserHandler(userService service.UserService) *userHandler {
 
 func (h *userHandler) Register(c *gin.Context) {
 	var userRequest users.UserCreate
-	c.Header("Access-Control-Allow-Origin", "*")
 
 	err := c.ShouldBindJSON(&userRequest)
 	if err != nil {
