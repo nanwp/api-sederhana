@@ -26,6 +26,8 @@ func NewUserHandler(userService service.UserService) *userHandler {
 
 func (h *userHandler) Register(c *gin.Context) {
 	var userRequest users.UserCreate
+	c.Header("Access-Control-Allow-Origin", c.GetHeader("Origin"))
+	c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 
 	err := c.ShouldBindJSON(&userRequest)
 	if err != nil {
