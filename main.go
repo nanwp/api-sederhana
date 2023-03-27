@@ -24,6 +24,6 @@ func main() {
 
 	a := r.Group("/users", middleware.JWTMiddleware)
 	a.GET("/", handler.Index)
-	r.Run()
+	r.Run(":8080")
 
 }
