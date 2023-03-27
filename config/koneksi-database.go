@@ -9,7 +9,7 @@ import (
 
 func ConnectDatabase() *gorm.DB {
 	// url := "postgres://postgres:Latihan#@103.171.182.206:5432/api-sederhana"
-	url := "postgres://postgres:r00tLatihan@103.171.182.206:5432/api-sederhana"
+	url := "postgres://postgres:Latihan@103.171.182.206:5432/api_sederhana"
 	database, err := gorm.Open(postgres.Open(url), &gorm.Config{})
 
 	if err != nil {
