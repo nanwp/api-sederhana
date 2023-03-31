@@ -15,26 +15,26 @@ type UserService interface {
 	FindAll() ([]users.User, error)
 }
 
-type service struct {
+type userService struct {
 	repository repository.UserRepository
 }
 
-func NewUserService(repository repository.UserRepository) *service {
-	return &service{repository}
+func NewUserService(repository repository.UserRepository) *userService {
+	return &userService{repository}
 }
 
-func (s *service) Create(user users.UserCreate) (users.User, error) {
+func (s *userService) Create(user users.UserCreate) (users.User, error) {
 
 	uuidGenerate := uuid.New()
 	stringUuid := uuidGenerate.String()
 	hashPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	usr := users.User{
 		ID:       stringUuid,
+		Name:     user.Name,
 		Email:    user.Email,
 		Username: user.Username,
 		Password: string(hashPassword),
-		Phone:    user.Phone,
-		Alamat:   user.Alamat,
+		Role:     user.Role,
 	}
 
 	newUser, err := s.repository.Create(usr)
@@ -42,16 +42,16 @@ func (s *service) Create(user users.UserCreate) (users.User, error) {
 	return newUser, err
 }
 
-func (s *service) FindByUsername(username string) (users.User, error) {
+func (s *userService) FindByUsername(username string) (users.User, error) {
 	return s.repository.FindByUsername(username)
 }
-func (s *service) FindByEmail(email string) (users.User, error) {
+func (s *userService) FindByEmail(email string) (users.User, error) {
 	return s.repository.FindByEmail(email)
 }
 
-func (s *service) FindByID(id string) (users.User, error) {
+func (s *userService) FindByID(id string) (users.User, error) {
 	return s.repository.FindByID(id)
 }
-func (s *service) FindAll() ([]users.User, error) {
+func (s *userService) FindAll() ([]users.User, error) {
 	return s.repository.FindAll()
 }
