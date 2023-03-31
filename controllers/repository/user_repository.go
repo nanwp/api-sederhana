@@ -22,28 +22,28 @@ func NewUserRepository(db *gorm.DB) *userRepository {
 }
 
 func (r *userRepository) Create(users users.User) (users.User, error) {
-	err := r.db.Table("tbl_user").Create(&users).Error
+	err := r.db.Create(&users).Error
 	return users, err
 }
 
 func (r *userRepository) FindByUsername(username string) (users.User, error) {
 	var user users.User
-	err := r.db.Table("tbl_user").Where("username = ?", username).First(&user).Error
+	err := r.db.Where("username = ?", username).First(&user).Error
 	return user, err
 }
 func (r *userRepository) FindByEmail(email string) (users.User, error) {
 	var user users.User
-	err := r.db.Table("tbl_user").Where("email = ?", email).First(&user).Error
+	err := r.db.Where("email = ?", email).First(&user).Error
 	return user, err
 }
 
 func (r *userRepository) FindByID(id string) (users.User, error) {
 	var user users.User
-	err := r.db.Table("tbl_user").Where("id = ?", id).First(&user).Error
+	err := r.db.Where("id = ?", id).First(&user).Error
 	return user, err
 }
 func (r *userRepository) FindAll() ([]users.User, error) {
 	var user []users.User
-	err := r.db.Table("tbl_user").Find(&user).Error
+	err := r.db.Find(&user).Error
 	return user, err
 }

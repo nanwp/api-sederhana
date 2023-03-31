@@ -3,12 +3,14 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/nanwp/api-sederhana/controllers/service"
-	"github.com/nanwp/api-sederhana/models/category"
+	"github.com/nanwp/api-sederhana/helper"
 	"github.com/nanwp/api-sederhana/models/products"
+	"gorm.io/gorm"
 )
 
 type productHandler struct {
@@ -58,7 +60,7 @@ func (h *productHandler) CreateProduct(c *gin.Context) {
 	})
 }
 
-func (h *productHandler) GetProduct(c *gin.Context) {
+func (h *productHandler) GetProducts(c *gin.Context) {
 	allProduct, err := h.productService.FindAll()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -70,7 +72,7 @@ func (h *productHandler) GetProduct(c *gin.Context) {
 	var productsResponse []products.ProductResponse
 
 	for _, p := range allProduct {
-		pr := convertProductToResponse(p)
+		pr := helper.ConvertProductToResponse(p)
 		productsResponse = append(productsResponse, pr)
 	}
 
@@ -79,20 +81,72 @@ func (h *productHandler) GetProduct(c *gin.Context) {
 	})
 }
 
-func convertProductToResponse(p products.Product) products.ProductResponse {
-
-	categoryResponse := category.CategoryResponse{
-		ID:   p.Category.ID,
-		Name: p.Category.Name,
+func (h *productHandler) GetProduct(c *gin.Context) {
+	idStr := c.Param("id")
+	id, _ := strconv.Atoi(idStr)
+	produk, err := h.productService.FindByID(id)
+	if err != nil {
+		switch err {
+		case gorm.ErrRecordNotFound:
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "record not found",
+			})
+			return
+		default:
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": err,
+			})
+			return
+		}
 	}
 
-	productResponse := products.ProductResponse{
-		SKU:      p.SKU,
-		Name:     p.Name,
-		Stock:    p.Stock,
-		Price:    p.Price,
-		Image:    p.Image,
-		Category: categoryResponse,
+	productResponse := helper.ConvertProductToResponse(produk)
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": productResponse,
+	})
+}
+
+func (h *productHandler) UpdateProduct(c *gin.Context) {
+	var productUpdate products.ProductUpdate
+
+	err := c.ShouldBindJSON(&productUpdate)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		return
 	}
-	return productResponse
+
+	idStr := c.Param("id")
+	id, _ := strconv.Atoi(idStr)
+
+	produk, err := h.productService.Update(id, productUpdate)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": helper.ConvertProductUpdateToResponse(produk),
+	})
+}
+
+func (h *productHandler) DeleteProduct(c *gin.Context) {
+	idStr := c.Param("id")
+	id, _ := strconv.Atoi(idStr)
+
+	produk, err := h.productService.Delete(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"data": helper.ConvertProductToResponse(produk),
+	})
 }

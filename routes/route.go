@@ -57,8 +57,17 @@ func Route() {
 
 	a := r.Group("/api", middleware.JWTMiddleware)
 	a.GET("/users", middleware.AdminAuth, userHandler.GetUsers)
-	a.POST("/addcategory", middleware.AdminAuth, categoryHandler.CreateCategory)
-	a.POST("/addproduct", middleware.AdminAuth, productHandler.CreateProduct)
-	a.GET("/products", productHandler.GetProduct)
+
+	a.GET("/category", middleware.AdminAuth, categoryHandler.GetCategories)
+	a.GET("/category/:id", middleware.AdminAuth, categoryHandler.GetCategory)
+	a.PUT("/category/:id", middleware.AdminAuth, categoryHandler.UpdateCategory)
+	a.DELETE("/category/:id", middleware.AdminAuth, categoryHandler.DeleteCategory)
+	a.POST("/category", middleware.AdminAuth, categoryHandler.CreateCategory)
+
+	a.GET("/product", productHandler.GetProducts)
+	a.GET("/product/:id", productHandler.GetProduct)
+	a.PUT("/product/:id", productHandler.UpdateProduct)
+	a.DELETE("/product/:id", productHandler.DeleteProduct)
+	a.POST("/product", middleware.AdminAuth, productHandler.CreateProduct)
 	r.Run(":8080")
 }

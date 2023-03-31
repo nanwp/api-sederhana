@@ -9,6 +9,8 @@ type CategoryRepository interface {
 	Create(category category.Category) (category.Category, error)
 	FindByID(id int) (category.Category, error)
 	FindAll() ([]category.Category, error)
+	Update(category category.Category) (category.Category, error)
+	Delete(category category.Category) (category.Category, error)
 }
 
 type categoryRepository struct {
@@ -20,18 +22,28 @@ func NewCategoryRepository(db *gorm.DB) *categoryRepository {
 }
 
 func (r *categoryRepository) Create(category category.Category) (category.Category, error) {
-	err := r.db.Table("tbl_category").Create(&category).Error
+	err := r.db.Create(&category).Error
 	return category, err
 }
 
 func (r *categoryRepository) FindByID(id int) (category.Category, error) {
 	var category category.Category
-	err := r.db.Table("tbl_category").Where("id = ?", id).First(&category).Error
+	err := r.db.Where("id = ?", id).First(&category).Error
 	return category, err
 }
 
 func (r *categoryRepository) FindAll() ([]category.Category, error) {
 	var category []category.Category
-	err := r.db.Table("tbl_category").Find(&category).Error
+	err := r.db.Find(&category).Error
+	return category, err
+}
+
+func (r *categoryRepository) Update(category category.Category) (category.Category, error) {
+	err := r.db.Save(&category).Error
+	return category, err
+}
+
+func (r *categoryRepository) Delete(category category.Category) (category.Category, error) {
+	err := r.db.Delete(category).Error
 	return category, err
 }
