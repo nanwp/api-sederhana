@@ -72,7 +72,7 @@ func (h *userHandler) Register(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"data": user,
+		"data": convertToResponse(user),
 	})
 }
 
@@ -130,7 +130,7 @@ func (h *userHandler) Login(c *gin.Context) {
 		return
 	}
 
-	expTime := time.Now().Add(time.Minute * 1)
+	expTime := time.Now().Add(time.Hour * 24)
 	claims := &config.JWTClaim{
 		Username: userLogin.ID,
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -162,4 +162,34 @@ func (h *userHandler) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "berhasil login",
 	})
+}
+
+func (h *userHandler) GetUsers(c *gin.Context) {
+	usersAll, err := h.userService.FindAll()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"errors": err,
+		})
+		return
+	}
+	var usersResponse []users.UserResponse
+
+	for _, u := range usersAll {
+		userResponse := convertToResponse(u)
+		usersResponse = append(usersResponse, userResponse)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"users": usersResponse,
+	})
+}
+
+func convertToResponse(u users.User) users.UserResponse {
+	userResponse := users.UserResponse{
+		Name:     u.Name,
+		Email:    u.Email,
+		Username: u.Username,
+		Role:     u.Role,
+	}
+	return userResponse
 }

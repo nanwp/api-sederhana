@@ -31,8 +31,6 @@ func JWTMiddleware(c *gin.Context) {
 		},
 	)
 
-	Username = claims.Username
-
 	if err != nil {
 		v, _ := err.(*jwt.ValidationError)
 		switch v.Errors {
@@ -66,5 +64,6 @@ func JWTMiddleware(c *gin.Context) {
 		return
 	}
 
+	Username = claims.Username
 	c.Next()
 }
