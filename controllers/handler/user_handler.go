@@ -11,6 +11,7 @@ import (
 	"github.com/nanwp/api-sederhana/config"
 	"github.com/nanwp/api-sederhana/controllers/repository"
 	"github.com/nanwp/api-sederhana/controllers/service"
+	"github.com/nanwp/api-sederhana/helper"
 	"github.com/nanwp/api-sederhana/models/users"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -72,7 +73,7 @@ func (h *userHandler) Register(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"data": convertToResponse(user),
+		"data": helper.ConvertUserToResponse(user),
 	})
 }
 
@@ -175,21 +176,11 @@ func (h *userHandler) GetUsers(c *gin.Context) {
 	var usersResponse []users.UserResponse
 
 	for _, u := range usersAll {
-		userResponse := convertToResponse(u)
+		userResponse := helper.ConvertUserToResponse(u)
 		usersResponse = append(usersResponse, userResponse)
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"users": usersResponse,
 	})
-}
-
-func convertToResponse(u users.User) users.UserResponse {
-	userResponse := users.UserResponse{
-		Name:     u.Name,
-		Email:    u.Email,
-		Username: u.Username,
-		Role:     u.Role,
-	}
-	return userResponse
 }

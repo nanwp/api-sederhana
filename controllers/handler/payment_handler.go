@@ -9,23 +9,22 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/nanwp/api-sederhana/controllers/service"
 	"github.com/nanwp/api-sederhana/helper"
-	"github.com/nanwp/api-sederhana/models/category"
+	"github.com/nanwp/api-sederhana/models/payments"
 	"gorm.io/gorm"
 )
 
-type categoryHandler struct {
-	categoryService service.CategoryService
+type paymentHandler struct {
+	paymentService service.PaymentService
 }
 
-func NewCategoryHandler(categoryService service.CategoryService) *categoryHandler {
-	return &categoryHandler{categoryService}
+func NewPaymentHandler(paymentService service.PaymentService) *paymentHandler {
+	return &paymentHandler{paymentService}
 }
 
-func (h *categoryHandler) CreateCategory(c *gin.Context) {
+func (h *paymentHandler) CreatePayment(c *gin.Context) {
+	var paymentRequest payments.PaymentCreate
 
-	var categoryRequest category.CategoryCreate
-
-	err := c.ShouldBindJSON(&categoryRequest)
+	err := c.ShouldBindJSON(&paymentRequest)
 	if err != nil {
 		errorMessages := []string{}
 		for _, e := range err.(validator.ValidationErrors) {
@@ -38,8 +37,7 @@ func (h *categoryHandler) CreateCategory(c *gin.Context) {
 		return
 	}
 
-	category, err := h.categoryService.Create(categoryRequest)
-
+	payment, err := h.paymentService.Create(paymentRequest)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
@@ -50,41 +48,41 @@ func (h *categoryHandler) CreateCategory(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "Success",
-		"add ": gin.H{
-			"data": category,
+		"add": gin.H{
+			"data": payment,
 		},
 	})
 }
 
-func (h *categoryHandler) GetCategories(c *gin.Context) {
-	categories, err := h.categoryService.FindAll()
+func (h *paymentHandler) GetPayments(c *gin.Context) {
+	payment, err := h.paymentService.FindAll()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"errors": err,
+			"error": err,
 		})
 		return
 	}
 
-	var categoriesResponse []category.CategoryResponse
+	var paymentsResponse []payments.PaymentResponse
 
-	for _, cat := range categories {
-		categoryResponse := helper.ConvertCategoryToResponse(cat)
-		categoriesResponse = append(categoriesResponse, categoryResponse)
+	for _, pay := range payment {
+		paymentResponse := helper.ConvertPaymentToResponse(pay)
+		paymentsResponse = append(paymentsResponse, paymentResponse)
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "Success",
 		"data": gin.H{
-			"category": categoriesResponse,
+			"payments": paymentsResponse,
 		},
 	})
 }
 
-func (h *categoryHandler) GetCategory(c *gin.Context) {
+func (h *paymentHandler) GetPayment(c *gin.Context) {
 	idStr := c.Param("id")
 	id, _ := strconv.Atoi(idStr)
-	kategori, err := h.categoryService.FindByID(id)
+	payment, err := h.paymentService.FindByID(id)
 	if err != nil {
 		switch err {
 		case gorm.ErrRecordNotFound:
@@ -100,21 +98,20 @@ func (h *categoryHandler) GetCategory(c *gin.Context) {
 		}
 	}
 
-	categoryResponse := helper.ConvertCategoryToResponse(kategori)
-
+	paymentResponse := helper.ConvertPaymentToResponse(payment)
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "Success",
 		"data": gin.H{
-			"category": categoryResponse,
+			"payment": paymentResponse,
 		},
 	})
 }
 
-func (h *categoryHandler) UpdateCategory(c *gin.Context) {
-	var categoryUpdate category.CategoryUpdate
+func (h *paymentHandler) UpdatePayment(c *gin.Context) {
+	var paymentUpdate payments.PaymentUpdate
 
-	err := c.ShouldBindJSON(&categoryUpdate)
+	err := c.ShouldBindJSON(&paymentUpdate)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
@@ -125,8 +122,7 @@ func (h *categoryHandler) UpdateCategory(c *gin.Context) {
 	idStr := c.Param("id")
 	id, _ := strconv.Atoi(idStr)
 
-	kategori, err := h.categoryService.Update(id, categoryUpdate)
-
+	payment, err := h.paymentService.Update(id, paymentUpdate)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
@@ -134,32 +130,36 @@ func (h *categoryHandler) UpdateCategory(c *gin.Context) {
 		return
 	}
 
+	paymentResponse := helper.ConvertPaymentToResponse(payment)
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "Success",
 		"data": gin.H{
-			"category": helper.ConvertCategoryToResponse(kategori),
+			"payment": paymentResponse,
 		},
 	})
-
 }
 
-func (h *categoryHandler) DeleteCategory(c *gin.Context) {
+func (h *paymentHandler) DeletePayment(c *gin.Context) {
 	idStr := c.Param("id")
 	id, _ := strconv.Atoi(idStr)
 
-	kategori, err := h.categoryService.Delete(id)
+	payment, err := h.paymentService.Delete(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
 		})
 		return
 	}
+
+	paymentResponse := helper.ConvertPaymentToResponse(payment)
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "Success",
 		"data": gin.H{
-			"category": helper.ConvertCategoryToResponse(kategori),
+			"payment": paymentResponse,
 		},
 	})
 }

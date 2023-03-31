@@ -28,6 +28,8 @@ func Route() {
 
 	productHandler := handler.NewProductHandler(service.NewProductService(repository.NewProductRepository(db)))
 
+	paymentHandler := handler.NewPaymentHandler(service.NewPaymentService(repository.NewPaymentRepository(db)))
+
 	cors, err := fcors.AllowAccess(
 		fcors.FromAnyOrigin(),
 		fcors.WithMethods(
@@ -57,8 +59,24 @@ func Route() {
 
 	a := r.Group("/api", middleware.JWTMiddleware)
 	a.GET("/users", middleware.AdminAuth, userHandler.GetUsers)
-	a.POST("/addcategory", middleware.AdminAuth, categoryHandler.CreateCategory)
-	a.POST("/addproduct", middleware.AdminAuth, productHandler.CreateProduct)
-	a.GET("/products", productHandler.GetProduct)
+
+	a.GET("/category", middleware.AdminAuth, categoryHandler.GetCategories)
+	a.GET("/category/:id", middleware.AdminAuth, categoryHandler.GetCategory)
+	a.PUT("/category/:id", middleware.AdminAuth, categoryHandler.UpdateCategory)
+	a.DELETE("/category/:id", middleware.AdminAuth, categoryHandler.DeleteCategory)
+	a.POST("/category", middleware.AdminAuth, categoryHandler.CreateCategory)
+
+	a.GET("/product", productHandler.GetProducts)
+	a.GET("/product/:id", productHandler.GetProduct)
+	a.PUT("/product/:id", productHandler.UpdateProduct)
+	a.DELETE("/product/:id", productHandler.DeleteProduct)
+	a.POST("/product", middleware.AdminAuth, productHandler.CreateProduct)
+
+	a.GET("/payment", paymentHandler.GetPayments)
+	a.GET("/payment/:id", paymentHandler.GetPayment)
+	a.PUT("/payment/:id", paymentHandler.UpdatePayment)
+	a.DELETE("/payment/:id", paymentHandler.DeletePayment)
+	a.POST("/payment", middleware.AdminAuth, paymentHandler.CreatePayment)
+
 	r.Run(":8080")
 }
