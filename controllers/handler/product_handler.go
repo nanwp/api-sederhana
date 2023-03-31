@@ -77,7 +77,11 @@ func (h *productHandler) GetProducts(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"data": productsResponse,
+		"success": true,
+		"message": "Success",
+		"data": gin.H{
+			"products": productsResponse,
+		},
 	})
 }
 
@@ -103,7 +107,9 @@ func (h *productHandler) GetProduct(c *gin.Context) {
 	productResponse := helper.ConvertProductToResponse(produk)
 
 	c.JSON(http.StatusOK, gin.H{
-		"data": productResponse,
+		"success": true,
+		"message": "Success",
+		"data":    productResponse,
 	})
 }
 

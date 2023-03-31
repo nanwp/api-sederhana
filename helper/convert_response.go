@@ -2,6 +2,7 @@ package helper
 
 import (
 	"github.com/nanwp/api-sederhana/models/category"
+	"github.com/nanwp/api-sederhana/models/payments"
 	"github.com/nanwp/api-sederhana/models/products"
 	"github.com/nanwp/api-sederhana/models/users"
 )
@@ -53,4 +54,14 @@ func ConvertUserToResponse(u users.User) users.UserResponse {
 		Role:     u.Role,
 	}
 	return userResponse
+}
+
+func ConvertPaymentToResponse(p payments.Payment) payments.PaymentResponse {
+	paymentResponse := payments.PaymentResponse{
+		ID:   p.ID,
+		Name: p.Name,
+		Type: p.Type,
+		Logo: p.Logo,
+	}
+	return paymentResponse
 }

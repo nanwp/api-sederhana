@@ -28,6 +28,8 @@ func Route() {
 
 	productHandler := handler.NewProductHandler(service.NewProductService(repository.NewProductRepository(db)))
 
+	paymentHandler := handler.NewPaymentHandler(service.NewPaymentService(repository.NewPaymentRepository(db)))
+
 	cors, err := fcors.AllowAccess(
 		fcors.FromAnyOrigin(),
 		fcors.WithMethods(
@@ -69,5 +71,12 @@ func Route() {
 	a.PUT("/product/:id", productHandler.UpdateProduct)
 	a.DELETE("/product/:id", productHandler.DeleteProduct)
 	a.POST("/product", middleware.AdminAuth, productHandler.CreateProduct)
+
+	a.GET("/payment", paymentHandler.GetPayments)
+	a.GET("/payment/:id", paymentHandler.GetPayment)
+	a.PUT("/payment/:id", paymentHandler.UpdatePayment)
+	a.DELETE("/payment/:id", paymentHandler.DeletePayment)
+	a.POST("/payment", middleware.AdminAuth, paymentHandler.CreatePayment)
+
 	r.Run(":8080")
 }
