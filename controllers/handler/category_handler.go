@@ -10,6 +10,7 @@ import (
 	"github.com/nanwp/api-sederhana/controllers/service"
 	"github.com/nanwp/api-sederhana/helper"
 	"github.com/nanwp/api-sederhana/models/category"
+	"gorm.io/gorm"
 )
 
 type categoryHandler struct {
@@ -77,10 +78,18 @@ func (h *categoryHandler) GetCategory(c *gin.Context) {
 	id, _ := strconv.Atoi(idStr)
 	kategori, err := h.categoryService.FindByID(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err,
-		})
-		return
+		switch err {
+		case gorm.ErrRecordNotFound:
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "record not found",
+			})
+			return
+		default:
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": err,
+			})
+			return
+		}
 	}
 
 	categoryResponse := helper.ConvertCategoryToResponse(kategori)
@@ -114,7 +123,7 @@ func (h *categoryHandler) UpdateCategory(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"date": helper.ConvertCategoryToResponse(kategori),
+		"data": helper.ConvertCategoryToResponse(kategori),
 	})
 
 }

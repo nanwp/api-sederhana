@@ -22,12 +22,25 @@ func ConvertProductToResponse(p products.Product) products.ProductResponse {
 	}
 
 	productResponse := products.ProductResponse{
+		ID:       p.ID,
 		SKU:      p.SKU,
 		Name:     p.Name,
 		Stock:    p.Stock,
 		Price:    p.Price,
 		Image:    p.Image,
 		Category: categoryResponse,
+	}
+	return productResponse
+}
+
+func ConvertProductUpdateToResponse(p products.Product) products.ProductUpdateResponse {
+	productResponse := products.ProductUpdateResponse{
+		SKU:        p.SKU,
+		Name:       p.Name,
+		Stock:      p.Stock,
+		Price:      p.Price,
+		Image:      p.Image,
+		CategoryId: p.CategoryId,
 	}
 	return productResponse
 }

@@ -64,7 +64,10 @@ func Route() {
 	a.DELETE("/category/:id", middleware.AdminAuth, categoryHandler.DeleteCategory)
 	a.POST("/category", middleware.AdminAuth, categoryHandler.CreateCategory)
 
-	a.POST("/addproduct", middleware.AdminAuth, productHandler.CreateProduct)
-	a.GET("/products", productHandler.GetProduct)
+	a.GET("/product", productHandler.GetProducts)
+	a.GET("/product/:id", productHandler.GetProduct)
+	a.PUT("/product/:id", productHandler.UpdateProduct)
+	a.DELETE("/product/:id", productHandler.DeleteProduct)
+	a.POST("/product", middleware.AdminAuth, productHandler.CreateProduct)
 	r.Run(":8080")
 }

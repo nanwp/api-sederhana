@@ -40,26 +40,26 @@ func (s *categoryService) FindAll() ([]category.Category, error) {
 }
 
 func (s *categoryService) Update(ID int, categoryUpdate category.CategoryUpdate) (category.Category, error) {
-	category, err := s.repository.FindByID(ID)
+	kategori, err := s.repository.FindByID(ID)
 	if err != nil {
-		return category, err
+		return kategori, err
 	}
 
 	if categoryUpdate.Name != "" {
-		category.Name = categoryUpdate.Name
+		kategori.Name = categoryUpdate.Name
 	}
 
-	updateCategory, err := s.repository.Update(category)
+	updateCategory, err := s.repository.Update(kategori)
 
 	return updateCategory, err
 }
 
 func (s *categoryService) Delete(ID int) (category.Category, error) {
-	category, err := s.repository.FindByID(ID)
+	kategori, err := s.repository.FindByID(ID)
 	if err != nil {
-		return category, err
+		return kategori, err
 	}
 
-	deleteCategory, err := s.repository.Delete(category)
+	deleteCategory, err := s.repository.Delete(kategori)
 	return deleteCategory, err
 }
