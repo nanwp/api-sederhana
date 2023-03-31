@@ -20,13 +20,13 @@ func NewProductRepository(db *gorm.DB) *productRepository {
 }
 
 func (r *productRepository) Create(product products.Product) (products.Product, error) {
-	err := r.db.Table("tbl_product").Create(&product).Error
+	err := r.db.Create(&product).Error
 	return product, err
 }
 
 func (r *productRepository) FindByID(id int) (products.Product, error) {
 	var product products.Product
-	err := r.db.Table("tbl_product").Where("id = ?", id).First(&product).Error
+	err := r.db.Where("id = ?", id).First(&product).Error
 	return product, err
 }
 

@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/nanwp/api-sederhana/controllers/service"
-	"github.com/nanwp/api-sederhana/models/category"
+	"github.com/nanwp/api-sederhana/helper"
 	"github.com/nanwp/api-sederhana/models/products"
 )
 
@@ -70,29 +70,11 @@ func (h *productHandler) GetProduct(c *gin.Context) {
 	var productsResponse []products.ProductResponse
 
 	for _, p := range allProduct {
-		pr := convertProductToResponse(p)
+		pr := helper.ConvertProductToResponse(p)
 		productsResponse = append(productsResponse, pr)
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"data": productsResponse,
 	})
-}
-
-func convertProductToResponse(p products.Product) products.ProductResponse {
-
-	categoryResponse := category.CategoryResponse{
-		ID:   p.Category.ID,
-		Name: p.Category.Name,
-	}
-
-	productResponse := products.ProductResponse{
-		SKU:      p.SKU,
-		Name:     p.Name,
-		Stock:    p.Stock,
-		Price:    p.Price,
-		Image:    p.Image,
-		Category: categoryResponse,
-	}
-	return productResponse
 }
