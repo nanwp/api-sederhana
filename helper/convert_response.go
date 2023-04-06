@@ -2,10 +2,35 @@ package helper
 
 import (
 	"github.com/nanwp/api-sederhana/models/category"
+	orderproducts "github.com/nanwp/api-sederhana/models/order_products"
+	"github.com/nanwp/api-sederhana/models/orders"
 	"github.com/nanwp/api-sederhana/models/payments"
 	"github.com/nanwp/api-sederhana/models/products"
 	"github.com/nanwp/api-sederhana/models/users"
 )
+
+func ConvertOrderToResponse(o orderproducts.OrderProduct) orderproducts.OrderResponse {
+
+	userResponse := ConvertUserToResponse(o.Order.User)
+	productResponse := ConvertProductToResponse(o.Products)
+	paymentResponse := ConvertPaymentToResponse(o.Order.Payment)
+
+	oResponse := orders.OrderGetResponse{
+		ID:          o.Order.ID,
+		User:        userResponse,
+		TotalPrice:  o.Order.TotalPrice,
+		TotalPaid:   o.Order.TotalPaid,
+		TotalReturn: o.Order.TotalReturn,
+		Payment:     paymentResponse,
+	}
+	orderResponse := orderproducts.OrderResponse{
+		ID:       o.ID,
+		Qty:      o.Qty,
+		Order:    oResponse,
+		Products: productResponse,
+	}
+	return orderResponse
+}
 
 func ConvertCategoryToResponse(c category.Category) category.CategoryResponse {
 	categoryResponse := category.CategoryResponse{

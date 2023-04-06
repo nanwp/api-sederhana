@@ -28,13 +28,13 @@ func (r *productRepository) Create(product products.Product) (products.Product, 
 
 func (r *productRepository) FindByID(id int) (products.Product, error) {
 	var product products.Product
-	err := r.db.Preload("Category").Joins("JOIN tbl_category on tbl_category.id=tbl_product.category_id").Where("tbl_product.id = ?", id).First(&product).Error
+	err := r.db.Preload("Category").Where("tbl_product.id = ?", id).First(&product).Error
 	return product, err
 }
 
 func (r *productRepository) FindAll() ([]products.Product, error) {
 	var product []products.Product
-	err := r.db.Preload("Category").Joins("JOIN tbl_category on tbl_category.id=tbl_product.category_id").Find(&product).Error
+	err := r.db.Preload("Category").Find(&product).Error
 	return product, err
 }
 
