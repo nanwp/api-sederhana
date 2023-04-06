@@ -11,6 +11,7 @@ import (
 	"github.com/nanwp/api-sederhana/config"
 	"github.com/nanwp/api-sederhana/controllers/repository"
 	"github.com/nanwp/api-sederhana/controllers/service"
+	"github.com/nanwp/api-sederhana/helper"
 	"github.com/nanwp/api-sederhana/models/users"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -72,7 +73,7 @@ func (h *userHandler) Register(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"data": user,
+		"data": helper.ConvertUserToResponse(user),
 	})
 }
 
@@ -130,7 +131,7 @@ func (h *userHandler) Login(c *gin.Context) {
 		return
 	}
 
-	expTime := time.Now().Add(time.Minute * 1)
+	expTime := time.Now().Add(time.Hour * 24)
 	claims := &config.JWTClaim{
 		Username: userLogin.ID,
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -161,5 +162,25 @@ func (h *userHandler) Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "berhasil login",
+	})
+}
+
+func (h *userHandler) GetUsers(c *gin.Context) {
+	usersAll, err := h.userService.FindAll()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"errors": err,
+		})
+		return
+	}
+	var usersResponse []users.UserResponse
+
+	for _, u := range usersAll {
+		userResponse := helper.ConvertUserToResponse(u)
+		usersResponse = append(usersResponse, userResponse)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"users": usersResponse,
 	})
 }

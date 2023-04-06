@@ -1,16 +1,11 @@
 package users
 
 type UserCreate struct {
+	Name     string `json:"nama" binding:"required"`
 	Email    string `json:"email" binding:"required,email"`
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
-	Phone    string `json:"phone"`
-	Alamat   string `json:"alamat"`
-}
-
-type UserLoginEmail struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required"`
+	Role     string `json:"role" binding:"required"`
 }
 
 type UserLogin struct {
