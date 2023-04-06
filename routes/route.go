@@ -30,6 +30,8 @@ func Route() {
 
 	paymentHandler := handler.NewPaymentHandler(service.NewPaymentService(repository.NewPaymentRepository(db)))
 
+	orderHandelr := handler.NewOrederHandler(service.NewOrderProductService(repository.NewOrderProductRepository(db)))
+
 	cors, err := fcors.AllowAccess(
 		fcors.FromAnyOrigin(),
 		fcors.WithMethods(
@@ -68,8 +70,8 @@ func Route() {
 
 	a.GET("/product", productHandler.GetProducts)
 	a.GET("/product/:id", productHandler.GetProduct)
-	a.PUT("/product/:id", productHandler.UpdateProduct)
-	a.DELETE("/product/:id", productHandler.DeleteProduct)
+	a.PUT("/product/:id", middleware.AdminAuth, productHandler.UpdateProduct)
+	a.DELETE("/product/:id", middleware.AdminAuth, productHandler.DeleteProduct)
 	a.POST("/product", middleware.AdminAuth, productHandler.CreateProduct)
 
 	a.GET("/payment", paymentHandler.GetPayments)
@@ -78,5 +80,9 @@ func Route() {
 	a.DELETE("/payment/:id", paymentHandler.DeletePayment)
 	a.POST("/payment", middleware.AdminAuth, paymentHandler.CreatePayment)
 
-	r.Run(":8080")
+	a.POST("/order", orderHandelr.CreateOrder)
+	a.GET("/order", orderHandelr.GetOrders)
+	a.GET("/order/:id", orderHandelr.GetOrder)
+
+	r.Run(":8090")
 }
