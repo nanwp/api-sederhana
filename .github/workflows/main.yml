@@ -35,10 +35,10 @@ jobs:
     - name: Deploy to VPS
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.SERVER }}
-        username: ${{ secrets.SERVER_USERNAME }}
-        password: ${{ secrets.SERVER_PASSWORD }}
-        port: ${{ secrets.SERVER_PORT }}
+        host: 103.161.184.72
+        username: root
+        password: Nanda2003()
+        port: 22
         script: |
           whoami
           docker stop api-sederhana || true && docker rm api-sederhana || true
